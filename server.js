@@ -1,6 +1,5 @@
 const ws = require("websocket");
 const http = require("http");
-const io = require('iohook');
 
 const PROTOCOL_NAME = "keypress-protocol"
 
@@ -34,24 +33,19 @@ wsServer.on("request", req => {
     console.log((new Date()) + " Connection request accepted");
     connections.push(connection);
 
+    connection.on("message", message => {
+        if (message.type === "utf8" && message.utf8Data === 'S') {
+            console.log((new Date()) + " Relaying space request");
+            connections.forEach(conn => conn.sendUTF('S'));
+        }
+    });
+
     connection.on("close", () => {
         console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected");
         connections.splice(connections.findIndex(c => c.remoteAddress === connection.remoteAddress), 1);
     });
 });
 
-io.on("keydown", event => {
-    if (event.keycode === 57 &&
-        !event.shiftKey &&
-        !event.altKey &&
-        !event.ctrlKey &&
-        !event.metaKey) {
-        console.log((new Date()) + " Space pressed!");
-        connections.forEach(conn => conn.sendUTF('S'));
-    }
-});
-io.start();
-
 server.listen(8080, () => {
-    console.log((new Date()) + " Server is listening on port 8080");
+    console.log((new Date()) + " Server is listening on port 80");
 });

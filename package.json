@@ -1,11 +1,12 @@
 {
   "name": "keypress-sync",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Node client/server program to allow sync keypress between peers",
   "main": "server.js",
   "scripts": {
     "server": "node server.js",
     "client": "node client.js",
+    "sender": "node sender.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Giovanni Orciuolo <giovanni.orciuolo1999@gmail.com>",
