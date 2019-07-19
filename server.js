@@ -37,9 +37,12 @@ wsServer.on("request", req => {
 
     connection.on("message", message => {
         if (message.type === "utf8" && message.utf8Data === 'S') {
-            console.log((new Date()) + " Relaying space request");
+            console.log((new Date()) + " Relaying space request to peers:");
             Object.entries(connections).forEach(
-                ([address, connection]) => connection.sendUTF('S')
+                ([address, connection]) => {
+                    console.log(address);
+                    connection.sendUTF('S');
+                }
             );
         }
     });
@@ -51,5 +54,5 @@ wsServer.on("request", req => {
 });
 
 server.listen(8080, () => {
-    console.log((new Date()) + " Server is listening on port 80");
+    console.log((new Date()) + " Server is listening on port 8080");
 });
