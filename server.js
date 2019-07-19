@@ -4,7 +4,6 @@ const http = require("http");
 const PROTOCOL_NAME = "keypress-protocol"
 
 const server = http.createServer((req, res) => {
-    console.log((new Date()) + " Got request for " + req.url);
     res.writeHead(404);
     res.end();
 });
@@ -14,8 +13,8 @@ const wsServer = new ws.server({
     autoAcceptConnections: false,
 });
 
-// List of clients connected
-const connections = [];
+// Map of clients connected
+const connections = {}
 
 function isOriginAllowed(origin) {
     // Logic to allow origin
@@ -31,18 +30,23 @@ wsServer.on("request", req => {
 
     const connection = req.accept(PROTOCOL_NAME, req.origin);
     console.log((new Date()) + " Connection request accepted");
-    connections.push(connection);
+    connections = {
+        ...connections,
+        [connection.remoteAddress]: connection
+    };
 
     connection.on("message", message => {
         if (message.type === "utf8" && message.utf8Data === 'S') {
             console.log((new Date()) + " Relaying space request");
-            connections.forEach(conn => conn.sendUTF('S'));
+            Object.entries(connections).forEach(
+                ([address, connection]) => connection.sendUTF('S')
+            );
         }
     });
 
     connection.on("close", () => {
         console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected");
-        connections.splice(connections.findIndex(c => c.remoteAddress === connection.remoteAddress), 1);
+        delete connections[connection.remoteAddress];
     });
 });
 

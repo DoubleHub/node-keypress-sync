@@ -1,6 +1,6 @@
 {
   "name": "keypress-sync",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Node client/server program to allow sync keypress between peers",
   "main": "server.js",
   "scripts": {
