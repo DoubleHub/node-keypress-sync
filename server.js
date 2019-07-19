@@ -14,7 +14,7 @@ const wsServer = new ws.server({
 });
 
 // Map of clients connected
-const connections = {}
+let connections = {}
 
 function isOriginAllowed(origin) {
     // Logic to allow origin
